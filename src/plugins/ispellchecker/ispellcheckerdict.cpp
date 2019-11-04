@@ -41,13 +41,37 @@ ISpellCheckerDict::~ISpellCheckerDict()
 
 bool ISpellCheckerDict::isCorrect(const QString &word) const
 {
-    return false;
+    bool ok = true;
+    IEnumSpellingError* enumSpellingError = nullptr;
+    if (m_spellChecker && SUCCEEDED(m_spellChecker->Check(word.toStdWString().c_str(), &enumSpellingError))) {
+        ISpellingError *spellingError = nullptr;
+        if (S_OK == enumSpellingError->Next(&spellingError)) {
+            ok = false;
+            spellingError->Release();
+        }
+        enumSpellingError->Release();
+    }
+    return ok;
 }
 
 QStringList ISpellCheckerDict::suggest(const QString &word) const
 {
-     return QStringList();
-
+    // query suggestions
+    QStringList replacements;
+    IEnumString* words = nullptr;
+    if (m_spellChecker && SUCCEEDED(m_spellChecker->Suggest(word.toStdWString().c_str(), &words))) {
+        HRESULT hr = S_OK;
+        while (S_OK == hr) {
+            LPOLESTR string = nullptr;
+            hr = words->Next(1, &string, nullptr);
+            if (S_OK == hr) {
+                replacements.push_back(QString::fromWCharArray(string));
+                CoTaskMemFree(string);
+            }
+        }
+        words->Release();
+    }
+    return replacements;
 }
 
 bool ISpellCheckerDict::storeReplacement(const QString &bad, const QString &good)
