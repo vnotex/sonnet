@@ -26,6 +26,7 @@ using namespace Sonnet;
 ISpellCheckerDict::ISpellCheckerDict(ISpellCheckerFactory *spellCheckerFactory, const QString &language)
     : SpellerPlugin(language)
 {
+    // try to init checker
     if (!SUCCEEDED(spellCheckerFactory->CreateSpellChecker(language.toStdWString().c_str(), &m_spellChecker))) {
         m_spellChecker = nullptr;
     }
@@ -41,6 +42,7 @@ ISpellCheckerDict::~ISpellCheckerDict()
 
 bool ISpellCheckerDict::isCorrect(const QString &word) const
 {
+    // check if we are incorrect, we only need to check one enum entry for that, only empty enum means OK
     bool ok = true;
     IEnumSpellingError* enumSpellingError = nullptr;
     if (m_spellChecker && SUCCEEDED(m_spellChecker->Check(word.toStdWString().c_str(), &enumSpellingError))) {
@@ -84,14 +86,12 @@ bool ISpellCheckerDict::storeReplacement(const QString &bad, const QString &good
 
 bool ISpellCheckerDict::addToPersonal(const QString &word)
 {
-    Q_UNUSED(word);
-    qCDebug(SONNET_ISPELLCHECKER) << "ISpellCheckerDict::storeReplacement not implemented";
-    return false;
+    // add word "permanently" to the dictionary
+    return m_spellChecker && SUCCEEDED(m_spellChecker->Add(word.toStdWString().c_str()));
 }
 
 bool ISpellCheckerDict::addToSession(const QString &word)
 {
-    Q_UNUSED(word);
-    qCDebug(SONNET_ISPELLCHECKER) << "ISpellCheckerDict::storeReplacement not implemented";
-    return false;
+    // ignore word for this session
+    return m_spellChecker && SUCCEEDED(m_spellChecker->Ignore(word.toStdWString().c_str()));
 }
