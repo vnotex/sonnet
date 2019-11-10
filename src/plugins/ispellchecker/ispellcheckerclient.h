@@ -24,10 +24,6 @@
 #include "client_p.h"
 
 #include <windows.h>
-
-// hack: fix later
-#define NTDDI_VERSION  NTDDI_WIN8
-
 #include <spellcheck.h>
 
 namespace Sonnet {

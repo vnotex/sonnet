@@ -1,3 +1,6 @@
+# needs windows 8 or higher
+add_definitions(-DWINVER=0x0602 -D_WIN32_WINNT=0x0602)
+
 set(sonnet_ispellchecker_PART_SRCS
     ispellcheckerclient.cpp
     ispellcheckerdict.cpp
