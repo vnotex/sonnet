@@ -56,10 +56,12 @@ int main(int argc, char *argv[])
     QMultiMap<int, QString> orderedTrigrams;
     for (const QString &key : model.keys()) {
         const QChar *data = key.constData();
-        bool hasTwoSpaces = (data[1].isSpace() && (data[0].isSpace() || data[2].isSpace()));
+        if (key.size() >= 3) {
+            const bool hasTwoSpaces = (data[1].isSpace() && (data[0].isSpace() || data[2].isSpace()));
 
-        if (!hasTwoSpaces) {
-            orderedTrigrams.insert(model[key], key);
+            if (!hasTwoSpaces) {
+                orderedTrigrams.insert(model[key], key);
+            }
         }
     }
     qDebug() << "Sorted!";
