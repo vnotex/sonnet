@@ -35,7 +35,7 @@ public:
     QString mainLanguage() const;
 
     AbstractTokenizer *source = nullptr;
-    QStringRef lastToken;
+    Token lastToken;
 
     mutable QString lastLanguage;
     mutable QString cachedMainLanguage;
@@ -86,7 +86,7 @@ void LanguageFilter::setBuffer(const QString &buffer)
     d->source->setBuffer(buffer);
 }
 
-QStringRef LanguageFilter::next()
+Token LanguageFilter::next()
 {
     d->lastToken = d->source->next();
     d->prevLanguage = d->lastLanguage;
@@ -97,7 +97,8 @@ QStringRef LanguageFilter::next()
 QString LanguageFilter::language() const
 {
     if (d->lastLanguage.isNull()) {
-        d->lastLanguage = d->gl.identify(d->lastToken.toString(), QStringList() << d->prevLanguage << Loader::openLoader()->settings()->defaultLanguage());
+        d->lastLanguage =
+            d->gl.identify(d->lastToken.token.toString(), QStringList() << d->prevLanguage << Loader::openLoader()->settings()->defaultLanguage());
     }
     const QStringList available = d->sp.availableLanguages();
 

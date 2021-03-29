@@ -41,20 +41,18 @@ public:
     void shiftBreaks(int from, int offset);
     void replace(int pos, int len, const QString &newWord);
 
-    QStringRef currentItem() const;
-
     TextBreaks *const breakFinder;
     QString buffer;
 
     int itemPosition = -1;
     mutable bool cacheValid;
-    QStringRef last;
+    Token last;
     const Type type;
     bool inAddress = false;
     bool ignoreUppercase = false;
 
     bool hasNext() const;
-    QStringRef next();
+    Token next();
     void setBuffer(const QString &b)
     {
         invalidate();
@@ -118,9 +116,9 @@ void BreakTokenizerPrivate::regenerateCache() const
     cacheValid = true;
 }
 
-QStringRef BreakTokenizerPrivate::next()
+Token BreakTokenizerPrivate::next()
 {
-    QStringRef block;
+    Token block;
 
     if (!hasNext()) {
         last = block;
@@ -128,7 +126,13 @@ QStringRef BreakTokenizerPrivate::next()
     }
 
     itemPosition++;
-    last = QStringRef(&buffer, breaks().at(itemPosition).start, breaks().at(itemPosition).length);
+
+    QStringView token = buffer;
+    const auto &textBreak = this->breaks().at(itemPosition);
+    token = token.mid(textBreak.start, textBreak.length);
+
+    last.token = token;
+    last.positionInBuffer = breaks().at(itemPosition).start;
     return last;
 }
 
@@ -164,9 +168,9 @@ void WordTokenizer::setBuffer(const QString &buffer)
     d->setBuffer(buffer);
 }
 
-QStringRef WordTokenizer::next()
+Token WordTokenizer::next()
 {
-    QStringRef n = d->next();
+    Token n = d->next();
 
     // end of address of url?
     if (d->inAddress && n.position() > 0 && d->buffer[n.position() - 1].isSpace()) {
@@ -175,7 +179,7 @@ QStringRef WordTokenizer::next()
 
     // check if this word starts an email address of url
     if (!d->inAddress || hasNext()) {
-        const int pos = n.position() + n.length();
+        const int pos = n.position() + n.token.length();
         if ((pos < d->buffer.length()) && d->buffer[pos] == QLatin1Char('@')) {
             d->inAddress = true;
         }
@@ -192,7 +196,7 @@ QString WordTokenizer::buffer() const
     return d->buffer;
 }
 
-bool WordTokenizer::isUppercase(const QStringRef &word) const
+bool WordTokenizer::isUppercase(QStringView word) const
 {
     for (int i = 0; i < word.length(); ++i) {
         if (word.at(i).isLetter() && !word.at(i).isUpper()) {
@@ -214,16 +218,16 @@ void WordTokenizer::replace(int pos, int len, const QString &newWord)
 
 bool WordTokenizer::isSpellcheckable() const
 {
-    if (d->last.isNull() || d->last.isEmpty()) {
+    if (d->last.token.isNull() || d->last.token.isEmpty()) {
         return false;
     }
-    if (!d->last.at(0).isLetter()) {
+    if (!d->last.token.at(0).isLetter()) {
         return false;
     }
     if (d->inAddress) {
         return false;
     }
-    if (d->ignoreUppercase && isUppercase(d->last)) {
+    if (d->ignoreUppercase && isUppercase(d->last.token)) {
         return false;
     }
     return true;
@@ -252,7 +256,7 @@ void SentenceTokenizer::setBuffer(const QString &buffer)
     d->setBuffer(buffer);
 }
 
-QStringRef SentenceTokenizer::next()
+Token SentenceTokenizer::next()
 {
     return d->next();
 }
