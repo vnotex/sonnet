@@ -94,7 +94,7 @@ GuessLanguagePrivate::GuessLanguagePrivate()
     }
 
     const QStringList languages = Loader::openLoader()->languages();
-    s_knownDictionaries = QSet<QString>(languages.begin(), languages.end());
+    s_knownDictionaries = QSet<QString>::fromList(languages);
     QSet<QString> dictionaryLanguages;
     for (const QString &dictName : qAsConst(s_knownDictionaries)) {
         QString languageName = QLocale(dictName).name();
@@ -500,7 +500,7 @@ GuessLanguagePrivate::GuessLanguagePrivate()
             qCDebug(SONNET_LOG_CORE) << "Unhandled script" << script;
             break;
         }
-        allLanguages.unite(QSet<QString>(names.constBegin(), names.constEnd()));
+        allLanguages.unite(QSet<QString>::fromList(names));
 
         { // Remove unknown languages
             QStringList pruned;
@@ -646,7 +646,7 @@ void GuessLanguagePrivate::loadModels()
         }
         availableLanguages.insert(iterator.key());
     }
-    QSet<QString> knownLanguages(s_scriptLanguages.constBegin(), s_scriptLanguages.constEnd());
+    QSet<QString> knownLanguages = QSet<QString>::fromList(s_scriptLanguages.values());
     knownLanguages.subtract(availableLanguages);
     if (!knownLanguages.isEmpty()) {
         qCDebug(SONNET_LOG_CORE) << "Missing trigrams for languages:" << knownLanguages;
