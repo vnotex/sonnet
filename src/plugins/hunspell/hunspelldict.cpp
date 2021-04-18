@@ -17,6 +17,7 @@
 #include <QStandardPaths>
 #include <QTextCodec>
 #include <QTextStream>
+#include <QStringBuilder>
 
 using namespace Sonnet;
 
