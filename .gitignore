@@ -25,4 +25,3 @@ CMakeLists.txt.user*
 .clangd
 .idea
 /cmake-build*
-sonnetcore_export.h

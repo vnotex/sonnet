@@ -177,7 +177,7 @@
   <customwidget>
    <class>Sonnet::DictionaryComboBox</class>
    <extends>QComboBox</extends>
-   <header>sonnet/dictionarycombobox.h</header>
+   <header>dictionarycombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

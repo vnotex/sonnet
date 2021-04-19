@@ -294,7 +294,7 @@ Click here if you consider the unknown word not to be misspelled, and you want t
   <customwidget>
    <class>Sonnet::DictionaryComboBox</class>
    <extends>QComboBox</extends>
-   <header>sonnet/dictionarycombobox.h</header>
+   <header>dictionarycombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

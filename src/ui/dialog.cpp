@@ -109,7 +109,12 @@ void Dialog::initConnections()
     connect(d->ui.m_skipBtn, &QAbstractButton::clicked, this, &Dialog::slotSkip);
     connect(d->ui.m_skipAllBtn, &QAbstractButton::clicked, this, &Dialog::slotSkipAll);
     connect(d->ui.m_suggestBtn, &QAbstractButton::clicked, this, &Dialog::slotSuggest);
-    connect(d->ui.m_language, &DictionaryComboBox::textActivated, this, &Dialog::slotChangeLanguage);
+    // Supported only from Qt 5.14.
+    // connect(d->ui.m_language, &DictionaryComboBox::textActivated, this, &Dialog::slotChangeLanguage);
+    connect(d->ui.m_language, QOverload<int>::of(&QComboBox::activated),
+            this, [this]() {
+                slotChangeLanguage(d->ui.m_language->currentText());
+            });
     connect(d->ui.m_suggestions, &QListView::clicked, this, &Dialog::slotSelectionChanged);
     connect(d->checker, &BackgroundChecker::misspelling, this, &Dialog::slotMisspelling);
     connect(d->checker, &BackgroundChecker::done, this, &Dialog::slotDone);

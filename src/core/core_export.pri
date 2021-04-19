@@ -15,3 +15,5 @@ win32:CONFIG(release, debug|release) {
     LIBS += $$OUT_FOLDER/libsonnet-core.a
     PRE_TARGETDEPS += $$OUT_FOLDER/libsonnet-core.a
 }
+
+DEFINES += SONNETCORE_STATIC_DEFINE
