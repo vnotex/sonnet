@@ -106,6 +106,9 @@ public:
      * Returns the SettingsImpl object used by the loader.
      */
     SettingsImpl *settings() const;
+
+    static void addDictionaryCustomSearchPaths(const QStringList &p_dirs);
+
 Q_SIGNALS:
     /**
      * Signal is emitted whenever the SettingsImpl object

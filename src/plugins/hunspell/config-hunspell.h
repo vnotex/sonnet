@@ -1,1 +1,1 @@
-#define USE_OLD_HUNSPELL_API 1
+#define USE_OLD_HUNSPELL_API 0

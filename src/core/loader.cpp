@@ -338,4 +338,9 @@ void Loader::changed()
 {
     Q_EMIT configurationChanged();
 }
+
+void Loader::addDictionaryCustomSearchPaths(const QStringList &p_dirs)
+{
+    HunspellClient::addDictionaryCustomSearchPaths(p_dirs);
+}
 }

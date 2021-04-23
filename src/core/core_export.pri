@@ -17,3 +17,6 @@ win32:CONFIG(release, debug|release) {
 }
 
 DEFINES += SONNETCORE_STATIC_DEFINE
+
+RESOURCES += $$PWD/trigrams.qrc
+

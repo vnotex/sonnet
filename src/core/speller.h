@@ -138,6 +138,8 @@ public: // Configuration API
     void setAttribute(Attribute attr, bool b = true);
     bool testAttribute(Attribute attr) const;
 
+    static void addDictionaryCustomSearchPaths(const QStringList &p_dirs);
+
 private:
     SpellerPrivate *const d;
 };

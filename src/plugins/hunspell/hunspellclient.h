@@ -10,6 +10,7 @@
 
 #include "client_p.h"
 #include <QMap>
+#include <QStringList>
 
 namespace Sonnet
 {
@@ -22,6 +23,7 @@ class HunspellClient : public Sonnet::Client
     Q_OBJECT
     Q_INTERFACES(Sonnet::Client)
     Q_PLUGIN_METADATA(IID "org.kde.Sonnet.HunspellClient")
+
 public:
     explicit HunspellClient(QObject *parent = nullptr);
     ~HunspellClient() override;
@@ -40,8 +42,12 @@ public:
         return QStringLiteral("Hunspell");
     }
 
+    static void addDictionaryCustomSearchPaths(const QStringList &p_dirs);
+
 private:
     QMap<QString, QString> m_languagePaths;
+
+    static QStringList s_dictionarySearchPaths;
 };
 
 #endif

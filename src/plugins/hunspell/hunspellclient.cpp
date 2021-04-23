@@ -15,6 +15,8 @@
 
 using namespace Sonnet;
 
+QStringList HunspellClient::s_dictionarySearchPaths;
+
 HunspellClient::HunspellClient(QObject *parent)
     : Client(parent)
 {
@@ -35,9 +37,12 @@ HunspellClient::HunspellClient(QObject *parent)
         }
     };
 
-#ifdef Q_OS_WIN
-    // maybeAddPath(QStringLiteral(SONNET_INSTALL_PREFIX "/bin/data/hunspell/"));
-#else
+    // Search custom paths.
+    for (const auto &path : s_dictionarySearchPaths) {
+        maybeAddPath(path);
+    }
+
+#ifndef Q_OS_WIN
     maybeAddPath(QStringLiteral("/System/Library/Spelling"));
     maybeAddPath(QStringLiteral("/usr/share/hunspell/"));
     maybeAddPath(QStringLiteral("/usr/share/myspell/"));
@@ -66,4 +71,10 @@ SpellerPlugin *HunspellClient::createSpeller(const QString &language)
 QStringList HunspellClient::languages() const
 {
     return m_languagePaths.keys();
+}
+
+void HunspellClient::addDictionaryCustomSearchPaths(const QStringList &p_dirs)
+{
+    s_dictionarySearchPaths.append(p_dirs);
+    s_dictionarySearchPaths.removeDuplicates();
 }

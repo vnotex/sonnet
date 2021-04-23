@@ -272,4 +272,9 @@ QMap<QString, QString> Speller::preferredDictionaries() const
     return langs;
 }
 
+void Speller::addDictionaryCustomSearchPaths(const QStringList &p_dirs)
+{
+    Loader::addDictionaryCustomSearchPaths(p_dirs);
+}
+
 } // namespace Sonnet
