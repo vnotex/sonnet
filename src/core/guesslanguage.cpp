@@ -634,7 +634,10 @@ void GuessLanguagePrivate::loadModels()
     }
 
     QDataStream in(&sin);
+    in.setVersion(QDataStream::Qt_5_12);
     in >> s_knownModels;
+
+    qCDebug(SONNET_LOG_CORE) << "Trigrams models size" << s_knownModels.size();
 
     // Sanity check
     QSet<QString> availableLanguages;

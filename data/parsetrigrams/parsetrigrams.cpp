@@ -15,16 +15,23 @@
 #include <QRegularExpression>
 #include <QString>
 #include <QTextStream>
+#include <QDebug>
 
 int main(int argc, char **argv)
 {
-    if (argc < 2) {
-        return 1;
+    if (argc < 3) {
+        qWarning() << argv[0] << "trigrams_files outfile.trigrams.map";
+        return -1;
     }
 
-    QFile sout;
-    sout.open(stdout, QIODevice::WriteOnly);
+    QFile sout(QString::fromLocal8Bit(argv[2]));
+    if (!sout.open(QIODevice::WriteOnly)) {
+        qWarning() << "Unable to open output file" << argv[2];
+        return -1;
+    }
+
     QDataStream out(&sout);
+    out.setVersion(QDataStream::Qt_5_12);
 
     QString path = QLatin1String(argv[1]);
     QDir td(path);
