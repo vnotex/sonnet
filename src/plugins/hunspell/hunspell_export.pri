@@ -2,16 +2,21 @@ INCLUDEPATH *= $$PWD
 
 DEPENDPATH *= $$PWD
 
-OUT_FOLDER = $$absolute_path($$relative_path($$PWD, $$_PRO_FILE_PWD_), $$OUT_PWD)
-win32:CONFIG(release, debug|release) {
-    LIBS += $$OUT_FOLDER/release/sonnet-hunspell.lib
-    # For static library, we need to add this depends to let Qt re-build the target
-    # when there is a change in the library.
-    PRE_TARGETDEPS += $$OUT_FOLDER/release/sonnet-hunspell.lib
-} else:win32:CONFIG(debug, debug|release) {
-    LIBS += $$OUT_FOLDER/debug/sonnet-hunspell.lib
-    PRE_TARGETDEPS += $$OUT_FOLDER/debug/sonnet-hunspell.lib
-} else:unix {
-    LIBS += $$OUT_FOLDER/libsonnet-hunspell.a
-    PRE_TARGETDEPS += $$OUT_FOLDER/libsonnet-hunspell.a
-}
+SOURCES += \
+           $$PWD/hunspelldict.cpp \
+           $$PWD/hunspellclient.cpp \
+           $$PWD/hunspelldebug.cpp
+
+HEADERS += \
+           $$PWD/hunspellclient.h \
+           $$PWD/hunspelldebug.h \
+           $$PWD/hunspelldict.h \
+           $$PWD/config-hunspell.h
+
+LIBS_FOLDER = $$PWD/../../../../../libs
+include($$LIBS_FOLDER/hunspell/hunspell_export.pri)
+
+DEFINES += SONNETUI_EXPORT=""
+DEFINES += SONNETCORE_EXPORT=""
+DEFINES += INSTALLATION_PLUGIN_PATH=""
+DEFINES += SONNET_STATIC

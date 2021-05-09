@@ -35,6 +35,8 @@ HEADERS += \
     $$PWD/textbreaks_p.h \
     $$PWD/tokenizer_p.h
 
+include($$PWD/../plugins/hunspell/hunspell_export.pri)
+
 DEFINES += SONNETCORE_EXPORT=""
 DEFINES += INSTALLATION_PLUGIN_PATH=""
 DEFINES += SONNET_STATIC
