@@ -10,6 +10,7 @@
 
 #include "sonnetcore_export.h"
 #include <QString>
+#include <QStringRef>
 
 namespace Sonnet
 {

@@ -11,6 +11,8 @@
 #include "hunspell.hxx"
 #include "spellerplugin_p.h"
 
+#include <QTextCodec>
+
 class HunspellDict : public Sonnet::SpellerPlugin
 {
 public:

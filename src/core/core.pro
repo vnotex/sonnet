@@ -3,6 +3,10 @@ TEMPLATE = lib
 CONFIG += staticlib c++11
 QT -= gui
 
+greaterThan(QT_MAJOR_VERSION, 6) {
+    QT += core5compat
+}
+
 DEFINES += SONNETCORE_STATIC_DEFINE
 
 SOURCES += \

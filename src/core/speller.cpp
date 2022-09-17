@@ -46,7 +46,7 @@ public:
             recreateDict();
             settings->setModified(false);
         }
-        return dict;
+        return dict != nullptr;
     }
 
     void recreateDict()
@@ -238,7 +238,7 @@ bool Speller::testAttribute(Attribute attr) const
 
 bool Speller::isValid() const
 {
-    return d->dict;
+    return d->dict != nullptr;
 }
 
 void Speller::setLanguage(const QString &lang)
