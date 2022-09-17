@@ -1,7 +1,7 @@
 QT += core
 QT -= gui
 
-greaterThan(QT_MAJOR_VERSION, 6) {
+greaterThan(QT_MAJOR_VERSION, 5) {
     QT += core5compat
 }
 
