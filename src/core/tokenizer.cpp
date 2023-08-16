@@ -192,7 +192,7 @@ QString WordTokenizer::buffer() const
     return d->buffer;
 }
 
-bool WordTokenizer::isUppercase(const QStringRef &word) const
+bool WordTokenizer::isUppercase(const QStringView &word) const
 {
     for (int i = 0; i < word.length(); ++i) {
         if (word.at(i).isLetter() && !word.at(i).isUpper()) {

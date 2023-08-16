@@ -28,9 +28,7 @@ int main(int argc, char *argv[])
         return -1;
     }
     QTextStream stream(&file);
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-    stream.setCodec("UTF-8");
-#endif
+    stream.setEncoding(QStringConverter::Utf8);
 
     QFile outFile(QString::fromLocal8Bit(argv[2]));
     if (!outFile.open(QIODevice::WriteOnly)) {
@@ -82,9 +80,7 @@ int main(int argc, char *argv[])
     i = orderedTrigrams.end();
     int count = 0;
     QTextStream outStream(&outFile);
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-    outStream.setCodec("UTF-8");
-#endif
+    outStream.setEncoding(QStringConverter::Utf8);
     while (i != orderedTrigrams.begin()) {
         --i;
         outStream << *i << "\t\t\t" << count++ << '\n';

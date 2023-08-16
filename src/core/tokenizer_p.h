@@ -101,7 +101,7 @@ public:
     void setIgnoreUppercase(bool val);
 
 private:
-    bool isUppercase(const QStringRef &word) const;
+    bool isUppercase(const QStringView &word) const;
     BreakTokenizerPrivate *const d;
 };
 

@@ -108,11 +108,7 @@ SpellerPlugin *Loader::createSpeller(const QString &language, const QString &cli
         }
     }
 
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
     QListIterator<Client *> itr(lClients);
-#else
-    QVectorIterator<Client *> itr(lClients);
-#endif
     while (itr.hasNext()) {
         Client *item = itr.next();
         if (!backend.isEmpty()) {

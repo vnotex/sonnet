@@ -2,11 +2,7 @@ TARGET = sonnet-core
 TEMPLATE = lib
 CONFIG += staticlib c++11
 QT -= gui
-
-greaterThan(QT_MAJOR_VERSION, 5) {
-    QT += core5compat
-}
-
+QT += core5compat
 DEFINES += SONNETCORE_STATIC_DEFINE
 
 SOURCES += \
