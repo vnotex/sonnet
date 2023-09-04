@@ -8,7 +8,6 @@
 #ifndef ABSTRACTTOKENIZER_H
 #define ABSTRACTTOKENIZER_H
 
-#include "sonnetcore_export.h"
 #include <QString>
 #include <QStringRef>
 
