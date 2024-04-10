@@ -1,25 +1,42 @@
-include(ECMMarkNonGuiExecutable)
+cmake_minimum_required(VERSION 3.16)
+project(sonnet-data VERSION 1.0 LANGUAGES C CXX)
 
-if(NOT CMAKE_CROSSCOMPILING)
-    add_executable(parsetrigrams parsetrigrams.cpp)
-    add_executable(gentrigrams gentrigrams.cpp)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-    # Mark it as non-gui so we won't create an app bundle on Mac OS X
-    ecm_mark_nongui_executable(parsetrigrams)
-    ecm_mark_nongui_executable(gentrigrams)
+set(QT_VERSION_MAJOR 6 CACHE STRING "Qt version to use (5 or 6), defaults to 6")
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
+find_package(Qt${QT_VERSION_MAJOR} OPTIONAL_COMPONENTS Core5Compat)
 
-    TARGET_LINK_LIBRARIES(parsetrigrams PUBLIC Qt5::Core)
-    TARGET_LINK_LIBRARIES(gentrigrams PUBLIC Qt5::Core KF5::SonnetCore)
-    INSTALL(TARGETS parsetrigrams ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
-    INSTALL(TARGETS gentrigrams ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
+qt_standard_project_setup()
 
-    add_executable(KF5::parsetrigrams ALIAS parsetrigrams)
-else()
-    if (NOT PARSETRIGRAMS_EXECUTABLE AND KF5_HOST_TOOLING)
-        find_program(PARSETRIGRAMS_EXECUTABLE parsetrigrams PATHS ${KF5_HOST_TOOLING}/${KDE_INSTALL_BINDIR} NO_DEFAULT_PATH)
-    endif()
-    if (PARSETRIGRAMS_EXECUTABLE)
-        add_executable(KF5::parsetrigrams IMPORTED GLOBAL)
-        set_target_properties(KF5::parsetrigrams PROPERTIES IMPORTED_LOCATION ${PARSETRIGRAMS_EXECUTABLE})
-    endif()
+qt_add_executable(gentrigrams
+    gentrigrams/gentrigrams.cpp
+)
+target_compile_definitions(gentrigrams PRIVATE
+    SONNETCORE_STATIC_DEFINE
+)
+
+target_include_directories(gentrigrams PRIVATE ../src/core)
+target_link_directories(gentrigrams PRIVATE ../src/core)
+
+target_link_libraries(gentrigrams PRIVATE
+    Qt::Core
+    sonnet-core
+)
+
+qt_add_executable(parsetrigrams
+    parsetrigrams/parsetrigrams.cpp
+)
+
+target_link_libraries(parsetrigrams PRIVATE
+    Qt::Core
+)
+
+if((QT_VERSION_MAJOR GREATER 5))
+    target_link_libraries(gentrigrams PRIVATE
+        Qt::Core5Compat
+    )
+    target_link_libraries(parsetrigrams PRIVATE
+        Qt::Core5Compat
+    )
 endif()

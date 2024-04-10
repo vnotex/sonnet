@@ -1,107 +1,47 @@
-project(sonnetcore)
+cmake_minimum_required(VERSION 3.16)
+project(sonnet-core VERSION 1.0 LANGUAGES C CXX)
 
-set(sonnetcore_SRCS
-   loader.cpp
-   client.cpp
-   spellerplugin.cpp
-   speller.cpp
-   settingsimpl.cpp
-   settings.cpp
-   backgroundchecker.cpp
-   guesslanguage.cpp
-   textbreaks.cpp
-   tokenizer.cpp
-   languagefilter.cpp
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(QT_VERSION_MAJOR 6 CACHE STRING "Qt version to use (5 or 6), defaults to 6")
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
+find_package(Qt${QT_VERSION_MAJOR} OPTIONAL_COMPONENTS Core5Compat)
+
+qt_standard_project_setup()
+
+qt_add_library(sonnet-core STATIC
+    backgroundchecker.cpp backgroundchecker.h backgroundchecker_p.h
+    client.cpp client_p.h
+    core_debug.cpp core_debug.h
+    guesslanguage.cpp guesslanguage.h
+    languagefilter.cpp languagefilter_p.h
+    loader.cpp loader_p.h
+    settings.cpp settings.h
+    settingsimpl.cpp settingsimpl_p.h
+    sonnetcore_export.h
+    speller.cpp speller.h
+    spellerplugin.cpp spellerplugin_p.h
+    textbreaks.cpp textbreaks_p.h
+    tokenizer.cpp tokenizer_p.h
+)
+target_compile_definitions(sonnet-core PUBLIC
+    INSTALLATION_PLUGIN_PATH=""
+    SONNETCORE_STATIC_DEFINE
+    SONNET_STATIC
 )
 
-# create trigrams file + add trigrams resource
-if (TARGET KF5::parsetrigrams)
-    add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/data/trigrams.map"
-                       COMMAND KF5::parsetrigrams "${CMAKE_SOURCE_DIR}/data/trigrams" > "${CMAKE_BINARY_DIR}/data/trigrams.map")
-    configure_file(${CMAKE_SOURCE_DIR}/data/trigrams.qrc.in ${CMAKE_BINARY_DIR}/data/trigrams.qrc @ONLY)
-    qt5_add_resources(sonnetcore_SRCS "${CMAKE_BINARY_DIR}/data/trigrams.qrc")
-endif()
-
-ecm_qt_declare_logging_category(sonnetcore_SRCS
-    HEADER core_debug.h
-    IDENTIFIER SONNET_LOG_CORE
-    CATEGORY_NAME kf.sonnet.core
-    OLD_CATEGORY_NAMES sonnet.core
-    DESCRIPTION "Sonnet Core"
-    EXPORT SONNET
+target_link_libraries(sonnet-core PUBLIC
+    Qt::Core
 )
 
-# Dear packagers, this is just used as an extra search paths for plugins. Don't get your panties in a twist.
-add_definitions(-DINSTALLATION_PLUGIN_PATH="${CMAKE_INSTALL_PREFIX}/${KDE_INSTALL_PLUGINDIR}")
-
-
-add_library(KF5SonnetCore ${sonnetcore_SRCS})
-ecm_generate_export_header(KF5SonnetCore
-    BASE_NAME SonnetCore
-    GROUP_BASE_NAME KF
-    VERSION ${KF_VERSION}
-    DEPRECATED_BASE_VERSION 0
-    #DEPRECATION_VERSIONS 5.65
-    EXCLUDE_DEPRECATED_BEFORE_AND_AT ${EXCLUDE_DEPRECATED_BEFORE_AND_AT}
-)
-
-
-add_library(KF5::SonnetCore ALIAS KF5SonnetCore)
-
-ecm_generate_headers(SonnetCore_CamelCase_HEADERS
-  HEADER_NAMES
-    BackgroundChecker
-    Speller
-    GuessLanguage
-    Settings
-  PREFIX Sonnet
-  REQUIRED_HEADERS SonnetCore_HEADERS
-)
-
-target_link_libraries(KF5SonnetCore PUBLIC Qt5::Core)
-
-set_target_properties(KF5SonnetCore PROPERTIES VERSION ${SONNET_VERSION_STRING}
-                                               SOVERSION ${SONNET_SOVERSION}
-                                               EXPORT_NAME SonnetCore
-)
-
-# CMAKE_CURRENT_BINARY_DIR: for camelcase headers and lowercase forwarders
-target_include_directories(KF5SonnetCore INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF5}/SonnetCore>")
-target_include_directories(KF5SonnetCore PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
-
-install(TARGETS KF5SonnetCore EXPORT KF5SonnetTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
-
-install(FILES ${SonnetCore_CamelCase_HEADERS} DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/SonnetCore/Sonnet COMPONENT Devel)
-
-install(FILES
-   ${SonnetCore_HEADERS}
-   ${CMAKE_CURRENT_BINARY_DIR}/sonnetcore_export.h
-   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/SonnetCore/sonnet COMPONENT Devel)
-
-if (BUILD_QCH)
-    ecm_add_qch(
-        KF5SonnetCore_QCH
-        NAME SonnetCore
-        BASE_NAME KF5SonnetCore
-        VERSION ${KF_VERSION}
-        ORG_DOMAIN org.kde
-        SOURCES # using only public headers, to cover only public API
-            ${SonnetCore_HEADERS}
-        LINK_QCHS
-            Qt5Core_QCH
-        INCLUDE_DIRS
-            ${CMAKE_CURRENT_BINARY_DIR}
-        BLANK_MACROS
-            SONNETCORE_EXPORT
-            SONNETCORE_DEPRECATED_EXPORT
-            SONNETCORE_DEPRECATED
-            "SONNETCORE_DEPRECATED_VERSION(x, y, t)"
-        TAGFILE_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
-        QCH_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
-        COMPONENT Devel
+if((QT_VERSION_MAJOR GREATER 5))
+    target_link_libraries(sonnet-core PUBLIC
+        Qt::Core5Compat
     )
 endif()
 
-include(ECMGeneratePriFile)
-ecm_generate_pri_file(BASE_NAME SonnetCore LIB_NAME KF5SonnetCore DEPS "core" FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF5}/SonnetCore)
-install(FILES ${PRI_FILENAME} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
+install(TARGETS sonnet-core
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)

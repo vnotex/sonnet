@@ -1,11 +1,4 @@
+# Just to make it work with VTextEdit.
+add_subdirectory(../../hunspell ../../hunspell)
 add_subdirectory(core)
-add_subdirectory(plugins)
-if(TARGET Qt5::Widgets)
-    add_subdirectory(ui)
-endif()
-
-ecm_qt_install_logging_categories(
-    EXPORT SONNET
-    FILE sonnet.categories
-    DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR}
-)
+add_subdirectory(plugins/hunspell)
