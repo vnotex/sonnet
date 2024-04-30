@@ -33,9 +33,3 @@ target_link_libraries(sonnet-hunspell PUBLIC
     sonnet-core
     Hunspell
 )
-
-install(TARGETS sonnet-hunspell
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
