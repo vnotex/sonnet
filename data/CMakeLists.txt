@@ -16,7 +16,7 @@ else()
 endif()
 
 add_executable(gentrigrams
-    gentrigrams/gentrigrams.cpp
+    gentrigrams_src/gentrigrams.cpp
 )
 target_compile_definitions(gentrigrams PRIVATE
     SONNETCORE_STATIC_DEFINE
@@ -31,7 +31,7 @@ target_link_libraries(gentrigrams PRIVATE
 )
 
 add_executable(parsetrigrams
-    parsetrigrams/parsetrigrams.cpp
+    parsetrigrams_src/parsetrigrams.cpp
 )
 
 target_link_libraries(parsetrigrams PRIVATE
